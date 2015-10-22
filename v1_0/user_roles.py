@@ -1,3 +1,7 @@
+"""
+Classes that describe different user roles
+"""
+
 import requests
 import copy
 import logging
@@ -5,9 +9,17 @@ from . import config
 
 
 class AnonymousUser(object):
+    """
+    Class of the anonymous user
+    """
 
     def __init__(self):
-        self.api_url = config.API_URL
+        self.api_base = config.API_BASE
+        self.api_version = config.API_VERSION
+        self.api_url = '{api_url}/{api_version}'.format(
+            api_url=self.api_base,
+            api_version=self.api_version
+        )
     
     def get(self, *args, **kwargs):
         return requests.get(*self.update_args(args), **self.update_kwargs(kwargs))
@@ -64,9 +76,3 @@ class BumblebeeAnonymousUser(AnonymousUser):
             self.access_token = r.json()['access_token']
         except:
             logging.error('Failed getting access_token for Bumblebee user!')
-
-
-            
-anonymous_user = AnonymousUser()
-authenticated_user = AuthenticatedUser()
-bumblebee_user = BumblebeeAnonymousUser()    
